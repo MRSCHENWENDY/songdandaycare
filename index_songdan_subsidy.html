@@ -1,91 +1,179 @@
-
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <title>松丹日照｜補助額度試算</title>
-    <style>
-        body {
-            font-family: "Noto Sans TC", sans-serif;
-            background-color: #fdfdfb;
-            padding: 40px;
-            color: #333;
-        }
-        h1 {
-            color: #3f3f3f;
-        }
-        label {
-            display: block;
-            margin: 1em 0 0.5em;
-            font-weight: bold;
-        }
-        select {
-            width: 100%;
-            padding: 0.5em;
-            font-size: 1em;
-        }
-        #output {
-            margin-top: 1.5em;
-            padding: 1em;
-            background: #f5f5f5;
-            border-left: 4px solid #dcb100;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>松丹日照｜長照2.0補助試算</title>
+  <style>
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background-color: #FFF9F2;
+      padding: 2em;
+      line-height: 1.8;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 1em;
+    }
+    select {
+      width: 100%;
+      padding: 0.5em;
+      margin-top: 0.3em;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .card {
+      background-color: white;
+      border-radius: 12px;
+      padding: 2em;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      max-width: 600px;
+    }
+    .output {
+      margin-top: 1.5em;
+      font-size: 1.1em;
+    }
+    .highlight {
+      background-color: #FFE38E;
+      padding: 0.4em 0.6em;
+      border-radius: 6px;
+      display: inline-block;
+      margin-top: 0.5em;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
-    <h1>松丹日照｜補助額度查詢</h1>
-    <p>請依照實際狀況選擇長照等級與身份別，系統將自動計算每月補助與自費金額。</p>
-
+  <h1>松丹日照｜長照2.0補助試算</h1>
+  <div class="card">
     <label for="level">長照等級</label>
-    <select id="level" onchange="calcSubsidy()">
-        <option value="">請選擇</option>
-        <option value="2">第2級</option>
-        <option value="3">第3級</option>
-        <option value="4">第4級</option>
-        <option value="5">第5級</option>
-        <option value="6">第6級</option>
-        <option value="7">第7級</option>
-        <option value="8">第8級</option>
+    <select id="level">
+      <option value="">請選擇</option>
+      <option value="2">第2級</option>
+      <option value="3">第3級</option>
+      <option value="4">第4級</option>
+      <option value="5">第5級</option>
+      <option value="6">第6級</option>
+      <option value="7">第7級</option>
+      <option value="8">第8級</option>
     </select>
 
-    <label for="identity">身份別</label>
-    <select id="identity" onchange="calcSubsidy()">
-        <option value="">請選擇</option>
-        <option value="0.16">一般戶（16%）</option>
-        <option value="0.05">中低收入戶（5%）</option>
-        <option value="0">低收入戶（0%）</option>
+    <label for="identity">身分別</label>
+    <select id="identity">
+      <option value="">請選擇</option>
+      <option value="general">一般戶（16%）</option>
+      <option value="middle">中低收入戶（5%）</option>
+      <option value="low">低收入戶（0%）</option>
     </select>
 
-    <div id="output"></div>
+    <label for="type">日照服務</label>
+    <select id="type">
+      <option value="">請選擇</option>
+      <option value="full">全日</option>
+      <option value="half">半日</option>
+    </select>
 
-    <script>
-        const levelMap = {
-            2: 10020,
-            3: 15460,
-            4: 18580,
-            5: 24100,
-            6: 28070,
-            7: 32090,
-            8: 36180
-        };
+    <label for="days">選擇天數</label>
+    <select id="days"></select>
 
-        function calcSubsidy() {
-            const level = parseInt(document.getElementById('level').value);
-            const identity = parseFloat(document.getElementById('identity').value);
-            const output = document.getElementById('output');
+    <label for="bath">沐浴次數</label>
+    <select id="bath"></select>
 
-            if (!level || isNaN(identity)) {
-                output.innerHTML = '';
-                return;
-            }
+    <label for="transport">交通次數</label>
+    <select id="transport"></select>
 
-            const subsidy = levelMap[level];
-            const copay = Math.round(subsidy * identity);
+    <div class="output">
+      <div>補助額度：<span id="quota">-</span> 元</div>
+      <div>使用額度：<span id="used">-</span> 元</div>
+      <div>家屬自付金額：<span class="highlight" id="copay">-</span> 元</div>
+    </div>
+  </div>
 
-            output.innerHTML = `
-                <strong>每月補助額度：</strong>${subsidy.toLocaleString()} 元<br>
-            `;
-        }
-    </script>
+  <script>
+    // 長照等級對應額度
+    const levelQuota = {
+      2: 10020, 3: 15460, 4: 18580, 5: 24100,
+      6: 28070, 7: 32090, 8: 36180
+    };
+
+    // 單價資料表（一般戶／中低收／低收）
+    const priceTable = {
+      general: {
+        full: { 2: 108, 3: 134, 4: 147, 5: 167, 6: 180, 7: 193, 8: 205 },
+        half: { 2: 54, 3: 67, 4: 73, 5: 84, 6: 90, 7: 96, 8: 103 },
+        bath: 32,
+        transport: 16
+      },
+      middle: {
+        full: { 2: 33, 3: 42, 4: 46, 5: 52, 6: 56, 7: 60, 8: 64 },
+        half: { 2: 17, 3: 21, 4: 23, 5: 26, 6: 28, 7: 30, 8: 32 },
+        bath: 10,
+        transport: 5
+      },
+      low: {
+        full: { 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0 },
+        half: { 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0 },
+        bath: 0,
+        transport: 0
+      }
+    };
+
+    const levelEl = document.getElementById('level');
+    const identityEl = document.getElementById('identity');
+    const typeEl = document.getElementById('type');
+    const daysEl = document.getElementById('days');
+    const bathEl = document.getElementById('bath');
+    const transportEl = document.getElementById('transport');
+
+    const quotaEl = document.getElementById('quota');
+    const usedEl = document.getElementById('used');
+    const copayEl = document.getElementById('copay');
+
+    // 初始化下拉
+    function initSelect(el, max) {
+      el.innerHTML = '';
+      for (let i = 0; i <= max; i++) {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.text = i;
+        el.appendChild(opt);
+      }
+    }
+    initSelect(daysEl, 31);
+    initSelect(bathEl, 31);
+    initSelect(transportEl, 62);
+
+    function update() {
+      const level = parseInt(levelEl.value);
+      const identity = identityEl.value;
+      const type = typeEl.value;
+      const days = parseInt(daysEl.value || 0);
+      const bath = parseInt(bathEl.value || 0);
+      const transport = parseInt(transportEl.value || 0);
+
+      if (!level || !identity || !type) {
+        quotaEl.innerText = '-';
+        usedEl.innerText = '-';
+        copayEl.innerText = '-';
+        return;
+      }
+
+      const quota = levelQuota[level];
+      const prices = priceTable[identity];
+      const serviceUnit = prices[type][level];
+      const bathUnit = prices.bath;
+      const transUnit = prices.transport;
+
+      const total = (serviceUnit * days) + (bathUnit * bath) + (transUnit * transport);
+
+      quotaEl.innerText = quota.toLocaleString();
+      usedEl.innerText = total.toLocaleString();
+      copayEl.innerText = total.toLocaleString();
+    }
+
+    [levelEl, identityEl, typeEl, daysEl, bathEl, transportEl].forEach(el => {
+      el.addEventListener('change', update);
+    });
+  </script>
 </body>
 </html>
