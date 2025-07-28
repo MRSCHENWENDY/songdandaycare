@@ -10,6 +10,14 @@
       padding: 2em;
       line-height: 1.8;
     }
+    h1 {
+      margin-bottom: 0.5em;
+    }
+    .tool-notice {
+      margin-bottom: 1.5em;
+      color: #555;
+      font-size: 0.95em;
+    }
     label {
       font-weight: bold;
       display: block;
@@ -23,7 +31,7 @@
       border-radius: 6px;
     }
     .card {
-      background-color: white;
+      background-color: #fff;
       border-radius: 12px;
       padding: 2em;
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
@@ -42,7 +50,16 @@
       margin-top: 0.5em;
       font-weight: bold;
     }
-    /* 以下為表格樣式 */
+    .info-toggle-btn {
+      background-color: #FFE38E;
+      border: none;
+      border-radius: 8px;
+      padding: 0.6em 1.2em;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+      margin-bottom: 1em;
+    }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -59,6 +76,7 @@
 </head>
 <body>
   <h1>松丹日照｜長照2.0補助試算</h1>
+  <p class="tool-notice">本試算工具僅供參考，實際補助金額以政府核定結果為準。</p>
 
   <div class="card">
     <label for="level">長照等級</label>
@@ -126,22 +144,23 @@
           <th rowspan="2">每年額度補助</th>
         </tr>
         <tr>
-          <th>一般戶</th>
-          <th>中低收入戶</th>
-          <th>低收入戶</th>
+          <th>一般戶</th><th>中低收入戶</th><th>低收入戶</th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td>第2級</td><td>10,020</td>
           <td rowspan="7">16%</td><td rowspan="7">5%</td><td rowspan="7">0%</td>
-          <td rowspan="7">32,340</td>
+          <td rowspan="5">32,340</td>
         </tr>
         <tr><td>第3級</td><td>15,460</td></tr>
         <tr><td>第4級</td><td>18,580</td></tr>
         <tr><td>第5級</td><td>24,100</td></tr>
         <tr><td>第6級</td><td>28,070</td></tr>
-        <tr><td>第7級</td><td>32,090</td></tr>
+        <tr>
+          <td>第7級</td><td>32,090</td>
+          <td rowspan="2">48,510</td>
+        </tr>
         <tr><td>第8級</td><td>36,180</td></tr>
       </tbody>
     </table>
@@ -156,9 +175,7 @@
           <th rowspan="2">超出補助後費用</th>
         </tr>
         <tr>
-          <th>一般戶</th>
-          <th>中低收入戶</th>
-          <th>低收入戶</th>
+          <th>一般戶</th><th>中低收入戶</th><th>低收入戶</th>
         </tr>
       </thead>
       <tbody>
@@ -187,19 +204,19 @@
     };
     const priceTable = {
       general: {
-        full: { 2: 108, 3: 134, 4: 147, 5: 167, 6: 180, 7: 193, 8: 205 },
-        half: { 2: 54, 3: 67, 4: 73, 5: 84, 6: 90, 7: 96, 8: 103 },
-        bath: 32, transport: 16, ratio: 0.16
+        full: {2:108,3:134,4:147,5:167,6:180,7:193,8:205},
+        half: {2:54,3:67,4:73,5:84,6:90,7:96,8:103},
+        bath:32, transport:16, ratio:0.16
       },
       middle: {
-        full: { 2: 33, 3: 42, 4: 46, 5: 52, 6: 56, 7: 60, 8: 64 },
-        half: { 2: 17, 3: 21, 4: 23, 5: 26, 6: 28, 7: 30, 8: 32 },
-        bath: 10, transport: 5, ratio: 0.05
+        full: {2:33,3:42,4:46,5:52,6:56,7:60,8:64},
+        half: {2:17,3:21,4:23,5:26,6:28,7:30,8:32},
+        bath:10, transport:5, ratio:0.05
       },
       low: {
-        full: { 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0 },
-        half: { 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0 },
-        bath: 0, transport: 0, ratio: 0
+        full: {2:0,3:0,4:0,5:0,6:0,7:0,8:0},
+        half: {2:0,3:0,4:0,5:0,6:0,7:0,8:0},
+        bath:0, transport:0, ratio:0
       }
     };
 
@@ -209,7 +226,6 @@
     const daysEl = document.getElementById('days');
     const bathEl = document.getElementById('bath');
     const transportEl = document.getElementById('transport');
-
     const quotaEl = document.getElementById('quota');
     const usedEl = document.getElementById('used');
     const copayEl = document.getElementById('copay');
@@ -219,8 +235,7 @@
       el.innerHTML = '';
       for (let i = 0; i <= max; i++) {
         const opt = document.createElement('option');
-        opt.value = i;
-        opt.text = i;
+        opt.value = i; opt.text = i;
         el.appendChild(opt);
       }
     }
@@ -232,39 +247,30 @@
       const level = parseInt(levelEl.value);
       const identity = identityEl.value;
       const type = typeEl.value;
-      const days = parseInt(daysEl.value || 0);
-      const bath = parseInt(bathEl.value || 0);
-      const transport = parseInt(transportEl.value || 0);
-
-      if (!level || !identity || !type) {
+      const days = parseInt(daysEl.value||0);
+      const bath = parseInt(bathEl.value||0);
+      const transport = parseInt(transportEl.value||0);
+      if (!level||!identity||!type) {
         quotaEl.innerText = usedEl.innerText = copayEl.innerText = remainEl.innerText = '-';
         return;
       }
-
       const quota = levelQuota[level];
       const prices = priceTable[identity];
-      const unitPrice = prices[type][level];
-      const bathPrice = prices.bath;
-      const transportPrice = prices.transport;
-      const ratio = prices.ratio;
-
-      const total = (unitPrice * days) + (bathPrice * bath) + (transportPrice * transport);
-      const copay = Math.floor(total * ratio);
-      const remain = quota - total;
-
+      const unit = prices[type][level];
+      const total = unit*days + prices.bath*bath + prices.transport*transport;
+      const copay = Math.floor(total * prices.ratio);
       quotaEl.innerText = quota.toLocaleString();
       usedEl.innerText = total.toLocaleString();
       copayEl.innerText = copay.toLocaleString();
-      remainEl.innerText = remain.toLocaleString();
+      remainEl.innerText = (quota-total).toLocaleString();
     }
 
-    [levelEl, identityEl, typeEl, daysEl, bathEl, transportEl].forEach(el => {
-      el.addEventListener('change', update);
-    });
+    [levelEl, identityEl, typeEl, daysEl, bathEl, transportEl]
+      .forEach(el=>el.addEventListener('change', update));
 
     function toggleInfo() {
       const info = document.getElementById("infoSection");
-      info.style.display = (info.style.display === "none" || info.style.display === "") ? "block" : "none";
+      info.style.display = (info.style.display === "none") ? "block" : "none";
     }
   </script>
 </body>
