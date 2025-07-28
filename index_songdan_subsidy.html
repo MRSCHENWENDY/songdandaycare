@@ -212,5 +212,79 @@
 </div>
 
   </script>
+  <style>
+  .info-toggle-btn {
+    background-color: #009B5B;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    font-size: 1em;
+    cursor: pointer;
+    border-radius: 4px;
+    margin: 2em 0 1em;
+  }
+
+  .info-section {
+    display: none;
+    background-color: #fefaf4;
+    padding: 2em;
+    border-top: 4px solid #009B5B;
+    font-size: 0.95em;
+    color: #333;
+    line-height: 1.8;
+  }
+
+  .info-section h2 {
+    color: #009B5B;
+    margin-top: 2em;
+  }
+
+  .info-section table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1em;
+    background-color: #fff;
+  }
+
+  .info-section th, .info-section td {
+    border: 1px solid #ccc;
+    padding: 0.6em;
+    text-align: center;
+    font-size: 0.9em;
+  }
+
+  .info-section th {
+    background-color: #e0f3ec;
+    color: #003f2e;
+    font-weight: bold;
+  }
+</style>
+
+<button class="info-toggle-btn" onclick="toggleInfo()">顯示／隱藏補助說明</button>
+
+<div class="info-section" id="infoSection">
+  <!-- 這裡放剛剛整段的說明與表格區塊 -->
+  <p><strong>※ 本試算系統僅適用於社區式長照機構「日間照顧中心」</strong>，不含晚餐與喘息服務費用試算。</p>
+  <p>長照身份別說明：</p>
+  <ul>
+    <li><strong>長照低收入戶（0%）：</strong>列冊低收、中低收，或符合中低收入老人生活津貼第5條第1款者</li>
+    <li><strong>長照中低收入戶（5%）：</strong>符合中低收入老人生活津貼第5條第2款，或領有身障生活補助</li>
+    <li><strong>一般戶（16%）：</strong>除上述兩者以外身分</li>
+  </ul>
+
+  <!-- 以下略，請將剛剛的表格內容完整貼上 -->
+</div>
+
+<script>
+  function toggleInfo() {
+    const info = document.getElementById("infoSection");
+    if (info.style.display === "none" || info.style.display === "") {
+      info.style.display = "block";
+    } else {
+      info.style.display = "none";
+    }
+  }
+</script>
+
 </body>
 </html>
