@@ -1,0 +1,92 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>松丹日照｜補助額度試算</title>
+    <style>
+        body {
+            font-family: "Noto Sans TC", sans-serif;
+            background-color: #fdfdfb;
+            padding: 40px;
+            color: #333;
+        }
+        h1 {
+            color: #3f3f3f;
+        }
+        label {
+            display: block;
+            margin: 1em 0 0.5em;
+            font-weight: bold;
+        }
+        select {
+            width: 100%;
+            padding: 0.5em;
+            font-size: 1em;
+        }
+        #output {
+            margin-top: 1.5em;
+            padding: 1em;
+            background: #f5f5f5;
+            border-left: 4px solid #dcb100;
+        }
+    </style>
+</head>
+<body>
+    <h1>松丹日照｜補助額度查詢</h1>
+    <p>請依照實際狀況選擇長照等級與身份別，系統將自動計算每月補助與自費金額。</p>
+
+    <label for="level">長照等級</label>
+    <select id="level" onchange="calcSubsidy()">
+        <option value="">請選擇</option>
+        <option value="2">第2級</option>
+        <option value="3">第3級</option>
+        <option value="4">第4級</option>
+        <option value="5">第5級</option>
+        <option value="6">第6級</option>
+        <option value="7">第7級</option>
+        <option value="8">第8級</option>
+    </select>
+
+    <label for="identity">身份別</label>
+    <select id="identity" onchange="calcSubsidy()">
+        <option value="">請選擇</option>
+        <option value="0.16">一般戶（16%）</option>
+        <option value="0.05">中低收入戶（5%）</option>
+        <option value="0">低收入戶（0%）</option>
+    </select>
+
+    <div id="output"></div>
+
+    <script>
+        const levelMap = {
+            2: 10020,
+            3: 15460,
+            4: 18580,
+            5: 24100,
+            6: 28070,
+            7: 32090,
+            8: 36180
+        };
+
+        function calcSubsidy() {
+            const level = parseInt(document.getElementById('level').value);
+            const identity = parseFloat(document.getElementById('identity').value);
+            const output = document.getElementById('output');
+
+            if (!level || isNaN(identity)) {
+                output.innerHTML = '';
+                return;
+            }
+
+            const subsidy = levelMap[level];
+            const copay = Math.round(subsidy * identity);
+
+            output.innerHTML = `
+                <strong>每月補助額度：</strong>${subsidy.toLocaleString()} 元<br>
+                <strong>自行負擔金額：</strong>${copay.toLocaleString()} 元（以補助比例 ${Math.round(identity * 100)}% 計算）
+            `;
+        }
+    </script>
+</body>
+</html>
