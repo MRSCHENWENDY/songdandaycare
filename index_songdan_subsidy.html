@@ -121,132 +121,96 @@
     </div>
   </div>
 
-  <button class="toggle" onclick="toggleInfo()">說明</button>
-  <div id="infoBlock">
-    <p>本試算工具由松丹日照設計，協助使用者初步了解申請日間照顧中心服務後，每月約需負擔的金額。</p>
-    <p>本系統僅適用於「社區式長照機構－日間照顧中心」，不包含晚餐與喘息服務費用。</p>
-    <p>補助比例依身分別而異，說明如下：</p>
-    <table>
-      <thead>
-        <tr><th>身分別</th><th>自付比例</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>低收入戶</td><td>0%</td></tr>
-        <tr><td>中低收入戶</td><td>5%</td></tr>
-        <tr><td>一般戶</td><td>16%</td></tr>
-      </tbody>
-    </table>
-    <p style="margin-top: 1.5em;">長照等級對應補助額度如下：</p>
-    <table>
-      <thead>
-        <tr><th>等級</th><th>每月補助額度</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>第2級</td><td>10,020</td></tr>
-        <tr><td>第3級</td><td>15,460</td></tr>
-        <tr><td>第4級</td><td>18,580</td></tr>
-        <tr><td>第5級</td><td>24,100</td></tr>
-        <tr><td>第6級</td><td>28,070</td></tr>
-        <tr><td>第7級</td><td>32,090</td></tr>
-        <tr><td>第8級</td><td>36,180</td></tr>
-      </tbody>
-    </table>
-  </div>
+<style>
+  .info-section {
+    background-color: #fefaf4;
+    padding: 2em;
+    border-top: 4px solid #009B5B;
+    font-size: 0.95em;
+    color: #333;
+    line-height: 1.8;
+  }
+  .info-section h2 {
+    color: #009B5B;
+    margin-top: 2em;
+  }
+  .info-section table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1em;
+    background-color: #fff;
+  }
+  .info-section th, .info-section td {
+    border: 1px solid #ccc;
+    padding: 0.6em;
+    text-align: center;
+    font-size: 0.9em;
+  }
+  .info-section th {
+    background-color: #e0f3ec;
+    color: #003f2e;
+    font-weight: bold;
+  }
+</style>
 
-  <script>
-    const levelQuota = {
-      2: 10020, 3: 15460, 4: 18580, 5: 24100,
-      6: 28070, 7: 32090, 8: 36180
-    };
+<div class="info-section">
+  <p><strong>※ 本試算系統僅適用於社區式長照機構「日間照顧中心」</strong>，不含晚餐與喘息服務費用試算。</p>
+  <p>長照身份別說明：</p>
+  <ul>
+    <li><strong>長照低收入戶（0%）：</strong>列冊低收、中低收，或符合中低收入老人生活津貼第5條第1款者</li>
+    <li><strong>長照中低收入戶（5%）：</strong>符合中低收入老人生活津貼第5條第2款，或領有身障生活補助</li>
+    <li><strong>一般戶（16%）：</strong>除上述兩者以外身分</li>
+  </ul>
 
-    const priceTable = {
-      general: {
-        full: { 2: 108, 3: 134, 4: 147, 5: 167, 6: 180, 7: 193, 8: 205 },
-        half: { 2: 54, 3: 67, 4: 73, 5: 84, 6: 90, 7: 96, 8: 103 },
-        bath: 32,
-        transport: 16,
-        ratio: 0.16
-      },
-      middle: {
-        full: { 2: 33, 3: 42, 4: 46, 5: 52, 6: 56, 7: 60, 8: 64 },
-        half: { 2: 17, 3: 21, 4: 23, 5: 26, 6: 28, 7: 30, 8: 32 },
-        bath: 10,
-        transport: 5,
-        ratio: 0.05
-      },
-      low: {
-        full: { 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0 },
-        half: { 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0 },
-        bath: 0,
-        transport: 0,
-        ratio: 0
-      }
-    };
+  <h2>長照項目補助與喘息項目補助</h2>
+  <table>
+    <tr>
+      <th rowspan="2">長照等級</th>
+      <th colspan="4">每月補助額度與負擔比率</th>
+      <th rowspan="2">喘息服務 每年補助額度</th>
+    </tr>
+    <tr>
+      <th>補助額度</th>
+      <th>一般戶</th>
+      <th>中低收入戶</th>
+      <th>低收入戶</th>
+    </tr>
+    <tr><td>第2級</td><td>10,020</td><td>16%</td><td>5%</td><td>0%</td><td>32,340</td></tr>
+    <tr><td>第3級</td><td>15,460</td><td>16%</td><td>5%</td><td>0%</td><td></td></tr>
+    <tr><td>第4級</td><td>18,580</td><td>16%</td><td>5%</td><td>0%</td><td></td></tr>
+    <tr><td>第5級</td><td>24,100</td><td>16%</td><td>5%</td><td>0%</td><td></td></tr>
+    <tr><td>第6級</td><td>28,070</td><td>16%</td><td>5%</td><td>0%</td><td></td></tr>
+    <tr><td>第7級</td><td>32,090</td><td>16%</td><td>5%</td><td>0%</td><td>48,510</td></tr>
+    <tr><td>第8級</td><td>36,180</td><td>16%</td><td>5%</td><td>0%</td><td></td></tr>
+  </table>
 
-    function initSelect(el, max) {
-      el.innerHTML = '';
-      for (let i = 0; i <= max; i++) {
-        const opt = document.createElement('option');
-        opt.value = i;
-        opt.text = i;
-        el.appendChild(opt);
-      }
-    }
+  <h2>服務項目收費說明</h2>
+  <table>
+    <tr>
+      <th rowspan="2">服務內容</th>
+      <th rowspan="2">失能等級</th>
+      <th colspan="3">家屬負擔費用</th>
+      <th rowspan="2">超出補助後費用</th>
+    </tr>
+    <tr>
+      <th>一般戶</th>
+      <th>中低收入戶</th>
+      <th>低收入戶</th>
+    </tr>
+    <tr><td>日間照顧</td><td>第2級</td><td>108元/日</td><td>33元/日</td><td>0元/日</td><td>675元/日</td></tr>
+    <tr><td>日間照顧</td><td>第3級</td><td>134元/日</td><td>42元/日</td><td>0元/日</td><td>840元/日</td></tr>
+    <tr><td>日間照顧</td><td>第4級</td><td>147元/日</td><td>46元/日</td><td>0元/日</td><td>920元/日</td></tr>
+    <tr><td>日間照顧</td><td>第5級</td><td>167元/日</td><td>52元/日</td><td>0元/日</td><td>1045元/日</td></tr>
+    <tr><td>日間照顧</td><td>第6級</td><td>180元/日</td><td>56元/日</td><td>0元/日</td><td>1130元/日</td></tr>
+    <tr><td>日間照顧</td><td>第7級</td><td>193元/日</td><td>60元/日</td><td>0元/日</td><td>1210元/日</td></tr>
+    <tr><td>日間照顧</td><td>第8級</td><td>205元/日</td><td>64元/日</td><td>0元/日</td><td>1285元/日</td></tr>
+    <tr><td>交通接送</td><td>不分級</td><td>16元/次</td><td>5元/次</td><td>0元/次</td><td>100元/次</td></tr>
+    <tr><td>沐浴服務</td><td>不分級</td><td>32元/次</td><td>10元/次</td><td>0元/次</td><td>200元/次</td></tr>
+    <tr><td>社區式晚餐</td><td>不分級</td><td>24元/次</td><td>7元/次</td><td>0元/次</td><td>150元/次</td></tr>
+    <tr><td>喘息服務</td><td>不分級</td><td>200元/次</td><td>62元/次</td><td>0元/次</td><td>1250元/次</td></tr>
+  </table>
+</div>
 
-    const levelEl = document.getElementById('level');
-    const identityEl = document.getElementById('identity');
-    const typeEl = document.getElementById('type');
-    const daysEl = document.getElementById('days');
-    const bathEl = document.getElementById('bath');
-    const transportEl = document.getElementById('transport');
-
-    const quotaEl = document.getElementById('quota');
-    const usedEl = document.getElementById('used');
-    const remainEl = document.getElementById('remain');
-    const copayEl = document.getElementById('copay');
-
-    initSelect(daysEl, 31);
-    initSelect(bathEl, 31);
-    initSelect(transportEl, 62);
-
-    function update() {
-      const level = parseInt(levelEl.value);
-      const identity = identityEl.value;
-      const type = typeEl.value;
-      const days = parseInt(daysEl.value || 0);
-      const bath = parseInt(bathEl.value || 0);
-      const transport = parseInt(transportEl.value || 0);
-
-      if (!level || !identity || !type) {
-        quotaEl.innerText = usedEl.innerText = copayEl.innerText = remainEl.innerText = '-';
-        return;
-      }
-
-      const quota = levelQuota[level];
-      const prices = priceTable[identity];
-      const unitPrice = prices[type][level];
-      const bathPrice = prices.bath;
-      const transportPrice = prices.transport;
-      const ratio = prices.ratio;
-
-      const total = (unitPrice * days) + (bathPrice * bath) + (transportPrice * transport);
-      const copay = Math.floor(total * ratio);
-      const remain = quota - total;
-
-      quotaEl.innerText = quota.toLocaleString();
-      usedEl.innerText = total.toLocaleString();
-      copayEl.innerText = copay.toLocaleString();
-      remainEl.innerText = remain.toLocaleString();
-    }
-
-    [levelEl, identityEl, typeEl, daysEl, bathEl, transportEl].forEach(el => {
-      el.addEventListener('change', update);
-    });
-
-    function toggleInfo() {
-      const el = document.getElementById('infoBlock');
-      el.style.display = el.style.display === 'none' ? 'block' : 'none';
-    }
   </script>
 </body>
 </html>
