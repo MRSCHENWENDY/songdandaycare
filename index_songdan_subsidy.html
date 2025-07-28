@@ -41,6 +41,37 @@
       margin-top: 0.5em;
       font-weight: bold;
     }
+    #infoBlock {
+      display: none;
+      background-color: #FFECEC;
+      padding: 1.5em;
+      border-radius: 12px;
+      margin-top: 3em;
+      max-width: 600px;
+    }
+    #infoBlock table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 1em;
+    }
+    #infoBlock th, #infoBlock td {
+      border: 1px solid #aaa;
+      padding: 8px;
+      text-align: center;
+    }
+    #infoBlock thead {
+      background-color: #FFD6D6;
+    }
+    button.toggle {
+      margin-top: 2em;
+      background-color: #FFA8A8;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -90,6 +121,38 @@
     </div>
   </div>
 
+  <button class="toggle" onclick="toggleInfo()">說明</button>
+  <div id="infoBlock">
+    <p>本試算工具由松丹日照設計，協助使用者初步了解申請日間照顧中心服務後，每月約需負擔的金額。</p>
+    <p>本系統僅適用於「社區式長照機構－日間照顧中心」，不包含晚餐與喘息服務費用。</p>
+    <p>補助比例依身分別而異，說明如下：</p>
+    <table>
+      <thead>
+        <tr><th>身分別</th><th>自付比例</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>低收入戶</td><td>0%</td></tr>
+        <tr><td>中低收入戶</td><td>5%</td></tr>
+        <tr><td>一般戶</td><td>16%</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top: 1.5em;">長照等級對應補助額度如下：</p>
+    <table>
+      <thead>
+        <tr><th>等級</th><th>每月補助額度</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>第2級</td><td>10,020</td></tr>
+        <tr><td>第3級</td><td>15,460</td></tr>
+        <tr><td>第4級</td><td>18,580</td></tr>
+        <tr><td>第5級</td><td>24,100</td></tr>
+        <tr><td>第6級</td><td>28,070</td></tr>
+        <tr><td>第7級</td><td>32,090</td></tr>
+        <tr><td>第8級</td><td>36,180</td></tr>
+      </tbody>
+    </table>
+  </div>
+
   <script>
     const levelQuota = {
       2: 10020, 3: 15460, 4: 18580, 5: 24100,
@@ -120,18 +183,6 @@
       }
     };
 
-    const levelEl = document.getElementById('level');
-    const identityEl = document.getElementById('identity');
-    const typeEl = document.getElementById('type');
-    const daysEl = document.getElementById('days');
-    const bathEl = document.getElementById('bath');
-    const transportEl = document.getElementById('transport');
-
-    const quotaEl = document.getElementById('quota');
-    const usedEl = document.getElementById('used');
-    const copayEl = document.getElementById('copay');
-    const remainEl = document.getElementById('remain');
-
     function initSelect(el, max) {
       el.innerHTML = '';
       for (let i = 0; i <= max; i++) {
@@ -141,6 +192,19 @@
         el.appendChild(opt);
       }
     }
+
+    const levelEl = document.getElementById('level');
+    const identityEl = document.getElementById('identity');
+    const typeEl = document.getElementById('type');
+    const daysEl = document.getElementById('days');
+    const bathEl = document.getElementById('bath');
+    const transportEl = document.getElementById('transport');
+
+    const quotaEl = document.getElementById('quota');
+    const usedEl = document.getElementById('used');
+    const remainEl = document.getElementById('remain');
+    const copayEl = document.getElementById('copay');
+
     initSelect(daysEl, 31);
     initSelect(bathEl, 31);
     initSelect(transportEl, 62);
@@ -178,6 +242,11 @@
     [levelEl, identityEl, typeEl, daysEl, bathEl, transportEl].forEach(el => {
       el.addEventListener('change', update);
     });
+
+    function toggleInfo() {
+      const el = document.getElementById('infoBlock');
+      el.style.display = el.style.display === 'none' ? 'block' : 'none';
+    }
   </script>
 </body>
 </html>
