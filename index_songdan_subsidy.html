@@ -85,36 +85,38 @@
     <div class="output">
       <div>補助額度：<span id="quota">-</span> 元</div>
       <div>使用額度：<span id="used">-</span> 元</div>
+      <div>剩餘額度：<span id="remain">-</span> 元</div>
       <div>家屬自付金額：<span class="highlight" id="copay">-</span> 元</div>
     </div>
   </div>
 
   <script>
-    // 長照等級對應額度
     const levelQuota = {
       2: 10020, 3: 15460, 4: 18580, 5: 24100,
       6: 28070, 7: 32090, 8: 36180
     };
 
-    // 單價資料表（一般戶／中低收／低收）
     const priceTable = {
       general: {
         full: { 2: 108, 3: 134, 4: 147, 5: 167, 6: 180, 7: 193, 8: 205 },
         half: { 2: 54, 3: 67, 4: 73, 5: 84, 6: 90, 7: 96, 8: 103 },
         bath: 32,
-        transport: 16
+        transport: 16,
+        ratio: 0.16
       },
       middle: {
         full: { 2: 33, 3: 42, 4: 46, 5: 52, 6: 56, 7: 60, 8: 64 },
         half: { 2: 17, 3: 21, 4: 23, 5: 26, 6: 28, 7: 30, 8: 32 },
         bath: 10,
-        transport: 5
+        transport: 5,
+        ratio: 0.05
       },
       low: {
         full: { 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0 },
         half: { 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0 },
         bath: 0,
-        transport: 0
+        transport: 0,
+        ratio: 0
       }
     };
 
@@ -128,8 +130,8 @@
     const quotaEl = document.getElementById('quota');
     const usedEl = document.getElementById('used');
     const copayEl = document.getElementById('copay');
+    const remainEl = document.getElementById('remain');
 
-    // 初始化下拉
     function initSelect(el, max) {
       el.innerHTML = '';
       for (let i = 0; i <= max; i++) {
@@ -152,23 +154,25 @@
       const transport = parseInt(transportEl.value || 0);
 
       if (!level || !identity || !type) {
-        quotaEl.innerText = '-';
-        usedEl.innerText = '-';
-        copayEl.innerText = '-';
+        quotaEl.innerText = usedEl.innerText = copayEl.innerText = remainEl.innerText = '-';
         return;
       }
 
       const quota = levelQuota[level];
       const prices = priceTable[identity];
-      const serviceUnit = prices[type][level];
-      const bathUnit = prices.bath;
-      const transUnit = prices.transport;
+      const unitPrice = prices[type][level];
+      const bathPrice = prices.bath;
+      const transportPrice = prices.transport;
+      const ratio = prices.ratio;
 
-      const total = (serviceUnit * days) + (bathUnit * bath) + (transUnit * transport);
+      const total = (unitPrice * days) + (bathPrice * bath) + (transportPrice * transport);
+      const copay = Math.floor(total * ratio);
+      const remain = quota - total;
 
       quotaEl.innerText = quota.toLocaleString();
       usedEl.innerText = total.toLocaleString();
-      copayEl.innerText = total.toLocaleString();
+      copayEl.innerText = copay.toLocaleString();
+      remainEl.innerText = remain.toLocaleString();
     }
 
     [levelEl, identityEl, typeEl, daysEl, bathEl, transportEl].forEach(el => {
